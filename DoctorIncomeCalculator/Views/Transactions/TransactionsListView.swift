@@ -11,10 +11,10 @@ struct TransactionsListView: View {
     @State private var selectedFilter: TransactionFilter = .all
 
     enum TransactionFilter: String, CaseIterable {
-        case all = "All"
-        case thisMonth = "This Month"
-        case lastMonth = "Last Month"
-        case thisYear = "This Year"
+        case all = "Wszystkie"
+        case thisMonth = "Bieżący miesiąc"
+        case lastMonth = "Poprzedni miesiąc"
+        case thisYear = "Cały rok"
     }
 
     var userTransactions: [Transaction] {
@@ -79,20 +79,20 @@ struct TransactionsListView: View {
                 // Summary
                 HStack(spacing: 20) {
                     VStack {
-                        Text("Total")
+                        Text(LocalizedStrings.grossIncome)
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text(String(format: "%.2f PLN", totalAmount))
+                        Text(LocalizedStrings.formatCurrency(totalAmount))
                             .font(.headline)
                     }
 
                     Divider()
 
                     VStack {
-                        Text("Net Income")
+                        Text(LocalizedStrings.netIncome)
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text(String(format: "%.2f PLN", totalNetIncome))
+                        Text(LocalizedStrings.formatCurrency(totalNetIncome))
                             .font(.headline)
                             .foregroundColor(.green)
                     }
@@ -100,7 +100,7 @@ struct TransactionsListView: View {
                     Divider()
 
                     VStack {
-                        Text("Count")
+                        Text("Liczba")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Text("\(userTransactions.count)")
@@ -120,8 +120,8 @@ struct TransactionsListView: View {
                     .onDelete(perform: deleteTransactions)
                 }
             }
-            .navigationTitle("Transactions")
-            .searchable(text: $searchText, prompt: "Search transactions")
+            .navigationTitle(LocalizedStrings.transactions)
+            .searchable(text: $searchText, prompt: LocalizedStrings.search)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingAddTransaction = true }) {
@@ -135,9 +135,9 @@ struct TransactionsListView: View {
             .overlay {
                 if userTransactions.isEmpty {
                     ContentUnavailableView(
-                        "No Transactions",
+                        LocalizedStrings.noTransactions,
                         systemImage: "dollarsign.circle",
-                        description: Text("Add your first transaction to start tracking income")
+                        description: Text("Dodaj swoją pierwszą transakcję, aby rozpocząć śledzenie dochodów")
                     )
                 }
             }
@@ -157,12 +157,12 @@ struct TransactionRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
-                Text(transaction.employer?.name ?? "Unknown Employer")
+                Text(transaction.employer?.name ?? "Nieznany pracodawca")
                     .font(.headline)
 
                 Spacer()
 
-                Text(String(format: "%.2f PLN", transaction.amount))
+                Text(LocalizedStrings.formatCurrency(transaction.amount))
                     .font(.headline)
                     .foregroundColor(.primary)
             }
@@ -182,14 +182,14 @@ struct TransactionRow: View {
 
                 Spacer()
 
-                Text("\(Int(transaction.percent))%")
+                Text(LocalizedStrings.formatPercent(transaction.percent))
                     .font(.caption)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Color.orange.opacity(0.2))
                     .cornerRadius(4)
 
-                Text(String(format: "%.2f PLN", transaction.netIncome))
+                Text(LocalizedStrings.formatCurrency(transaction.netIncome))
                     .font(.caption)
                     .foregroundColor(.green)
             }

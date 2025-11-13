@@ -25,11 +25,11 @@ struct AddTransactionView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Transaction Details") {
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
+                Section("Szczegóły transakcji") {
+                    DatePicker(LocalizedStrings.date, selection: $date, displayedComponents: .date)
 
-                    Picker("Employer", selection: $selectedEmployer) {
-                        Text("Select Employer").tag(nil as Employer?)
+                    Picker(LocalizedStrings.employer, selection: $selectedEmployer) {
+                        Text(LocalizedStrings.selectEmployer).tag(nil as Employer?)
                         ForEach(userEmployers.sorted(by: { $0.name < $1.name })) { employer in
                             Text(employer.name).tag(employer as Employer?)
                         }
@@ -40,66 +40,66 @@ struct AddTransactionView: View {
                         }
                     }
 
-                    TextField("Amount (PLN)", text: $amount)
+                    TextField(LocalizedStrings.amount, text: $amount)
                         .keyboardType(.decimalPad)
                 }
 
-                Section("Additional Information") {
-                    TextField("Patient Name (optional)", text: $patientName)
+                Section("Dodatkowe informacje") {
+                    TextField("Nazwa pacjenta (opcjonalnie)", text: $patientName)
 
-                    TextField("Description (optional)", text: $transactionDescription)
+                    TextField("Opis (opcjonalnie)", text: $transactionDescription)
                 }
 
                 Section {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Percentage: \(Int(percent))%")
+                        Text("Procent: \(Int(percent))%")
                             .font(.headline)
 
                         Slider(value: $percent, in: 0...100, step: 1)
 
                         if let amountValue = Double(amount.replacingOccurrences(of: ",", with: ".")), amountValue > 0 {
                             HStack {
-                                Text("Deduction:")
+                                Text(LocalizedStrings.deducted + ":")
                                     .foregroundColor(.secondary)
                                 Spacer()
-                                Text(String(format: "%.2f PLN", amountValue * percent / 100))
+                                Text(LocalizedStrings.formatCurrency(amountValue * percent / 100))
                                     .foregroundColor(.orange)
                             }
 
                             HStack {
-                                Text("Net Income:")
+                                Text(LocalizedStrings.netIncome + ":")
                                     .foregroundColor(.secondary)
                                 Spacer()
-                                Text(String(format: "%.2f PLN", amountValue * (1 - percent / 100)))
+                                Text(LocalizedStrings.formatCurrency(amountValue * (1 - percent / 100)))
                                     .fontWeight(.bold)
                                     .foregroundColor(.green)
                             }
                         }
                     }
                 } header: {
-                    Text("Tax/Commission Percentage")
+                    Text("Procent podatku/prowizji")
                 }
 
                 Section {
                     Button(action: saveTransaction) {
-                        Text("Save Transaction")
+                        Text("Zapisz transakcję")
                             .frame(maxWidth: .infinity)
                             .fontWeight(.semibold)
                     }
                     .disabled(!isFormValid)
                 }
             }
-            .navigationTitle("Add Transaction")
+            .navigationTitle(LocalizedStrings.addNewTransaction)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(LocalizedStrings.cancel) {
                         dismiss()
                     }
                 }
             }
-            .alert("Error", isPresented: $showError) {
-                Button("OK", role: .cancel) { }
+            .alert(LocalizedStrings.error, isPresented: $showError) {
+                Button(LocalizedStrings.ok, role: .cancel) { }
             } message: {
                 Text(errorMessage)
             }
