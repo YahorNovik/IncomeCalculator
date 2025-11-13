@@ -107,7 +107,7 @@ struct AddTransactionView: View {
     }
 
     private var isFormValid: Bool {
-        guard let employer = selectedEmployer,
+        guard selectedEmployer != nil,
               let amountValue = Double(amount.replacingOccurrences(of: ",", with: ".")),
               amountValue >= 0 else {
             return false
