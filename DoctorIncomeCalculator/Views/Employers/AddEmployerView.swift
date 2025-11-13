@@ -4,7 +4,7 @@ import SwiftData
 struct AddEmployerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
 
     @State private var name = ""
     @State private var nip = ""
@@ -22,7 +22,7 @@ struct AddEmployerView: View {
                 Section("Employer Information") {
                     TextField("Name", text: $name)
 
-                    TextField("NIP (10 digits, optional)", text: $nip)
+                    TextField("Tax ID (optional)", text: $nip)
                         .keyboardType(.numberPad)
                         .onChange(of: nip) { _, newValue in
                             nip = String(newValue.prefix(10).filter { $0.isNumber })
@@ -81,7 +81,7 @@ struct AddEmployerView: View {
     }
 
     private func saveEmployer() {
-        guard let user = authManager.currentUser else {
+        guard let user = profileManager.currentUser else {
             errorMessage = "User not found"
             showError = true
             return
@@ -111,5 +111,5 @@ struct AddEmployerView: View {
 
 #Preview {
     AddEmployerView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
 }

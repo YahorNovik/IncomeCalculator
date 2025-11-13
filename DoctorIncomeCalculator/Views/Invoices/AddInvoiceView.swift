@@ -4,7 +4,7 @@ import SwiftData
 struct AddInvoiceView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
     @Query private var allEmployers: [Employer]
 
     @State private var selectedEmployer: Employer?
@@ -16,7 +16,7 @@ struct AddInvoiceView: View {
     @State private var showError = false
 
     var userEmployers: [Employer] {
-        guard let userId = authManager.currentUser?.id else { return [] }
+        guard let userId = profileManager.currentUser?.id else { return [] }
         return allEmployers.filter { $0.user?.id == userId }
     }
 
@@ -70,7 +70,7 @@ struct AddInvoiceView: View {
     }
 
     private func saveInvoice() {
-        guard let user = authManager.currentUser,
+        guard let user = profileManager.currentUser,
               let employer = selectedEmployer else {
             errorMessage = "Please select an employer"
             showError = true
@@ -101,5 +101,5 @@ struct AddInvoiceView: View {
 
 #Preview {
     AddInvoiceView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
 }

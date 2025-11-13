@@ -3,7 +3,8 @@ import SwiftData
 
 @main
 struct DoctorIncomeCalculatorApp: App {
-    @StateObject private var authManager = AuthenticationManager()
+    @StateObject private var profileManager = UserProfileManager()
+    @StateObject private var biometricAuth = BiometricAuthManager()
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -25,7 +26,8 @@ struct DoctorIncomeCalculatorApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(authManager)
+                .environmentObject(profileManager)
+                .environmentObject(biometricAuth)
                 .modelContainer(sharedModelContainer)
         }
     }

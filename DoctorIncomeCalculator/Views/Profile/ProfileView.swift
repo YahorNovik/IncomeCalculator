@@ -2,7 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct ProfileView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
+    @EnvironmentObject var biometricAuth: BiometricAuthManager
     @Environment(\.modelContext) private var modelContext
 
     @State private var isEditingProfile = false
@@ -11,7 +12,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             List {
-                if let user = authManager.currentUser {
+                if let user = profileManager.currentUser {
                     Section("Personal Information") {
                         InfoRow(label: "Name", value: user.name)
                         InfoRow(label: "Email", value: user.email)
@@ -47,10 +48,10 @@ struct ProfileView: View {
                         }
                     }
 
-                    Button(action: { authManager.logout() }) {
+                    Button(action: { biometricAuth.logout() }) {
                         HStack {
-                            Image(systemName: "arrow.right.square")
-                            Text("Logout")
+                            Image(systemName: "lock.fill")
+                            Text("Lock App")
                         }
                         .foregroundColor(.blue)
                     }
@@ -67,7 +68,7 @@ struct ProfileView: View {
             }
             .navigationTitle("Profile")
             .sheet(isPresented: $isEditingProfile) {
-                if let user = authManager.currentUser {
+                if let user = profileManager.currentUser {
                     EditProfileView(user: user)
                 }
             }
@@ -83,13 +84,14 @@ struct ProfileView: View {
     }
 
     private func deleteAccount() {
-        guard let user = authManager.currentUser else { return }
+        guard let user = profileManager.currentUser else { return }
 
         modelContext.delete(user)
 
         do {
             try modelContext.save()
-            authManager.logout()
+            profileManager.resetSetup()
+            biometricAuth.logout()
         } catch {
             print("Failed to delete account: \(error.localizedDescription)")
         }
@@ -98,5 +100,6 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
+        .environmentObject(BiometricAuthManager())
 }

@@ -2,24 +2,33 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
+    @EnvironmentObject var biometricAuth: BiometricAuthManager
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         Group {
-            if authManager.isAuthenticated {
-                MainTabView()
+            if !profileManager.hasCompletedSetup {
+                // First time setup
+                OnboardingView()
+            } else if !biometricAuth.isAuthenticated {
+                // Returning user - require biometric auth
+                BiometricLockView()
             } else {
-                LoginView()
+                // Authenticated - show main app
+                MainTabView()
             }
         }
         .onAppear {
-            authManager.restoreSession(modelContext: modelContext)
+            if profileManager.hasCompletedSetup {
+                profileManager.loadUser(modelContext: modelContext)
+            }
         }
     }
 }
 
 #Preview {
     ContentView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
+        .environmentObject(BiometricAuthManager())
 }

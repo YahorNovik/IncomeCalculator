@@ -38,7 +38,7 @@ struct RegisterView: View {
                     TextField("Full Name", text: $name)
                         .textContentType(.name)
 
-                    TextField("NIP (10 digits, optional)", text: $nip)
+                    TextField("Tax ID (optional)", text: $nip)
                         .keyboardType(.numberPad)
                         .onChange(of: nip) { _, newValue in
                             nip = String(newValue.prefix(10).filter { $0.isNumber })

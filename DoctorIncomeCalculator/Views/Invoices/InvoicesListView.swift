@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct InvoicesListView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Invoice.sellDate, order: .reverse) private var allInvoices: [Invoice]
 
@@ -10,7 +10,7 @@ struct InvoicesListView: View {
     @State private var searchText = ""
 
     var userInvoices: [Invoice] {
-        guard let userId = authManager.currentUser?.id else { return [] }
+        guard let userId = profileManager.currentUser?.id else { return [] }
         var filtered = allInvoices.filter { $0.user?.id == userId }
 
         if !searchText.isEmpty {
@@ -134,5 +134,5 @@ struct InvoiceRow: View {
 
 #Preview {
     InvoicesListView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
 }

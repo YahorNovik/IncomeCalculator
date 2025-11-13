@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct EmployersListView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
     @Environment(\.modelContext) private var modelContext
     @Query private var allEmployers: [Employer]
 
@@ -10,7 +10,7 @@ struct EmployersListView: View {
     @State private var searchText = ""
 
     var userEmployers: [Employer] {
-        guard let userId = authManager.currentUser?.id else { return [] }
+        guard let userId = profileManager.currentUser?.id else { return [] }
         let filtered = allEmployers.filter { $0.user?.id == userId }
 
         if searchText.isEmpty {
@@ -102,5 +102,5 @@ struct EmployerRow: View {
 
 #Preview {
     EmployersListView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
 }

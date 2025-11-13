@@ -4,7 +4,7 @@ import SwiftData
 struct AddTransactionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
     @Query private var allEmployers: [Employer]
 
     @State private var selectedEmployer: Employer?
@@ -18,7 +18,7 @@ struct AddTransactionView: View {
     @State private var showError = false
 
     var userEmployers: [Employer] {
-        guard let userId = authManager.currentUser?.id else { return [] }
+        guard let userId = profileManager.currentUser?.id else { return [] }
         return allEmployers.filter { $0.user?.id == userId }
     }
 
@@ -116,7 +116,7 @@ struct AddTransactionView: View {
     }
 
     private func saveTransaction() {
-        guard let user = authManager.currentUser,
+        guard let user = profileManager.currentUser,
               let employer = selectedEmployer,
               let amountValue = Double(amount.replacingOccurrences(of: ",", with: ".")) else {
             errorMessage = "Please fill in all required fields"
@@ -148,5 +148,5 @@ struct AddTransactionView: View {
 
 #Preview {
     AddTransactionView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
 }

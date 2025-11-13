@@ -3,12 +3,12 @@ import SwiftData
 import Charts
 
 struct HomeView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
     @Environment(\.modelContext) private var modelContext
     @Query private var allTransactions: [Transaction]
 
     var userTransactions: [Transaction] {
-        guard let userId = authManager.currentUser?.id else { return [] }
+        guard let userId = profileManager.currentUser?.id else { return [] }
         return allTransactions.filter { $0.user?.id == userId }
     }
 
@@ -29,7 +29,7 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     // Welcome Section
-                    if let user = authManager.currentUser {
+                    if let user = profileManager.currentUser {
                         VStack(alignment: .leading, spacing: 5) {
                             Text("Welcome back,")
                                 .font(.headline)
@@ -186,5 +186,5 @@ struct IncomeChartView: View {
 
 #Preview {
     HomeView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
 }

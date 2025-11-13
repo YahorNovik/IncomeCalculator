@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct TransactionsListView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var profileManager: UserProfileManager
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
 
@@ -18,7 +18,7 @@ struct TransactionsListView: View {
     }
 
     var userTransactions: [Transaction] {
-        guard let userId = authManager.currentUser?.id else { return [] }
+        guard let userId = profileManager.currentUser?.id else { return [] }
         var filtered = allTransactions.filter { $0.user?.id == userId }
 
         // Apply date filter
@@ -207,5 +207,5 @@ struct TransactionRow: View {
 
 #Preview {
     TransactionsListView()
-        .environmentObject(AuthenticationManager())
+        .environmentObject(UserProfileManager())
 }
