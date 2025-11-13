@@ -53,6 +53,20 @@ struct HomeView: View {
         return filtered.reduce(0) { $0 + $1.netIncome }
     }
 
+    // Current month transactions
+    var currentMonthTransactions: [Transaction] {
+        let calendar = Calendar.current
+        let now = Date()
+        return userTransactions.filter { transaction in
+            calendar.isDate(transaction.date, equalTo: now, toGranularity: .month)
+        }
+    }
+
+    // Current month total amount
+    var currentMonthTotalAmount: Double {
+        currentMonthTransactions.reduce(0) { $0 + $1.amount }
+    }
+
     // Calculate income for previous month
     var previousMonthIncome: Double {
         let calendar = Calendar.current
@@ -158,9 +172,6 @@ struct HomeView: View {
                                         Text("Liczba transakcji")
                                             .font(.caption)
                                             .foregroundColor(.secondary)
-                                        let currentMonthTransactions = userTransactions.filter { transaction in
-                                            Calendar.current.isDate(transaction.date, equalTo: Date(), toGranularity: .month)
-                                        }
                                         Text("\(currentMonthTransactions.count)")
                                             .font(.title3)
                                             .fontWeight(.semibold)
@@ -172,8 +183,7 @@ struct HomeView: View {
                                         Text("Łączna kwota")
                                             .font(.caption)
                                             .foregroundColor(.secondary)
-                                        let totalAmount = currentMonthTransactions.reduce(0) { $0 + $1.amount }
-                                        Text(LocalizedStrings.formatCurrency(totalAmount))
+                                        Text(LocalizedStrings.formatCurrency(currentMonthTotalAmount))
                                             .font(.title3)
                                             .fontWeight(.semibold)
                                     }
