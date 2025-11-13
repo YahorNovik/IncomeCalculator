@@ -8,7 +8,6 @@ struct EditEmployerView: View {
 
     @State private var name: String
     @State private var nip: String
-    @State private var regon: String
     @State private var city: String
     @State private var street: String
     @State private var buildingNumber: String
@@ -20,8 +19,7 @@ struct EditEmployerView: View {
     init(employer: Employer) {
         self.employer = employer
         _name = State(initialValue: employer.name)
-        _nip = State(initialValue: employer.nip)
-        _regon = State(initialValue: employer.regon ?? "")
+        _nip = State(initialValue: employer.nip ?? "")
         _city = State(initialValue: employer.city ?? "")
         _street = State(initialValue: employer.street ?? "")
         _buildingNumber = State(initialValue: employer.buildingNumber ?? "")
@@ -34,16 +32,10 @@ struct EditEmployerView: View {
                 Section("Employer Information") {
                     TextField("Name", text: $name)
 
-                    TextField("NIP (10 digits)", text: $nip)
+                    TextField("NIP (10 digits, optional)", text: $nip)
                         .keyboardType(.numberPad)
                         .onChange(of: nip) { _, newValue in
                             nip = String(newValue.prefix(10).filter { $0.isNumber })
-                        }
-
-                    TextField("REGON (9 digits, optional)", text: $regon)
-                        .keyboardType(.numberPad)
-                        .onChange(of: regon) { _, newValue in
-                            regon = String(newValue.prefix(9).filter { $0.isNumber })
                         }
                 }
 
@@ -95,13 +87,12 @@ struct EditEmployerView: View {
     }
 
     private var isFormValid: Bool {
-        !name.isEmpty && nip.count == 10
+        !name.isEmpty && (nip.isEmpty || nip.count == 10)
     }
 
     private func saveChanges() {
         employer.name = name
-        employer.nip = nip
-        employer.regon = regon.isEmpty ? nil : regon
+        employer.nip = nip.isEmpty ? nil : nip
         employer.city = city.isEmpty ? nil : city
         employer.street = street.isEmpty ? nil : street
         employer.buildingNumber = buildingNumber.isEmpty ? nil : buildingNumber

@@ -24,9 +24,8 @@ struct EmployerDetailView: View {
         List {
             Section("Information") {
                 InfoRow(label: "Name", value: employer.name)
-                InfoRow(label: "NIP", value: employer.nip)
-                if let regon = employer.regon {
-                    InfoRow(label: "REGON", value: regon)
+                if let nip = employer.nip {
+                    InfoRow(label: "NIP", value: nip)
                 }
                 InfoRow(label: "Default Percentage", value: "\(Int(employer.defaultPercent))%")
             }

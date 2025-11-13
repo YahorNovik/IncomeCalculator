@@ -11,7 +11,6 @@ struct AddInvoiceView: View {
     @State private var number = ""
     @State private var sellDate = Date()
     @State private var price = ""
-    @State private var fakturowniaId = ""
 
     @State private var errorMessage = ""
     @State private var showError = false
@@ -38,11 +37,6 @@ struct AddInvoiceView: View {
                             Text(employer.name).tag(employer as Employer?)
                         }
                     }
-                }
-
-                Section("Fakturownia Integration (Optional)") {
-                    TextField("Fakturownia ID", text: $fakturowniaId)
-                        .keyboardType(.numberPad)
                 }
 
                 Section {
@@ -86,7 +80,6 @@ struct AddInvoiceView: View {
         let priceValue = Double(price.replacingOccurrences(of: ",", with: "."))
 
         let invoice = Invoice(
-            fakturowniaId: fakturowniaId.isEmpty ? nil : fakturowniaId,
             number: number.isEmpty ? nil : number,
             sellDate: sellDate,
             price: priceValue,

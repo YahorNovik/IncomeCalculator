@@ -8,7 +8,6 @@ struct AddEmployerView: View {
 
     @State private var name = ""
     @State private var nip = ""
-    @State private var regon = ""
     @State private var city = ""
     @State private var street = ""
     @State private var buildingNumber = ""
@@ -23,16 +22,10 @@ struct AddEmployerView: View {
                 Section("Employer Information") {
                     TextField("Name", text: $name)
 
-                    TextField("NIP (10 digits)", text: $nip)
+                    TextField("NIP (10 digits, optional)", text: $nip)
                         .keyboardType(.numberPad)
                         .onChange(of: nip) { _, newValue in
                             nip = String(newValue.prefix(10).filter { $0.isNumber })
-                        }
-
-                    TextField("REGON (9 digits, optional)", text: $regon)
-                        .keyboardType(.numberPad)
-                        .onChange(of: regon) { _, newValue in
-                            regon = String(newValue.prefix(9).filter { $0.isNumber })
                         }
                 }
 
@@ -84,7 +77,7 @@ struct AddEmployerView: View {
     }
 
     private var isFormValid: Bool {
-        !name.isEmpty && nip.count == 10
+        !name.isEmpty && (nip.isEmpty || nip.count == 10)
     }
 
     private func saveEmployer() {
@@ -96,8 +89,7 @@ struct AddEmployerView: View {
 
         let employer = Employer(
             name: name,
-            nip: nip,
-            regon: regon.isEmpty ? nil : regon,
+            nip: nip.isEmpty ? nil : nip,
             city: city.isEmpty ? nil : city,
             street: street.isEmpty ? nil : street,
             buildingNumber: buildingNumber.isEmpty ? nil : buildingNumber,

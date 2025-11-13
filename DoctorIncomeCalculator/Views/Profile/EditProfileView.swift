@@ -8,11 +8,10 @@ struct EditProfileView: View {
 
     @State private var name: String
     @State private var email: String
+    @State private var nip: String
     @State private var city: String
     @State private var street: String
     @State private var buildingNumber: String
-    @State private var apiToken: String
-    @State private var domain: String
     @State private var currentPassword = ""
     @State private var newPassword = ""
     @State private var confirmPassword = ""
@@ -24,11 +23,10 @@ struct EditProfileView: View {
         self.user = user
         _name = State(initialValue: user.name)
         _email = State(initialValue: user.email)
+        _nip = State(initialValue: user.nip ?? "")
         _city = State(initialValue: user.city ?? "")
         _street = State(initialValue: user.street ?? "")
         _buildingNumber = State(initialValue: user.buildingNumber ?? "")
-        _apiToken = State(initialValue: user.apiToken ?? "")
-        _domain = State(initialValue: user.domain ?? "")
     }
 
     var body: some View {
@@ -41,25 +39,18 @@ struct EditProfileView: View {
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                         .disabled(true) // Email cannot be changed
-                }
 
-                Section("Business Information") {
-                    Text("NIP: \(user.nip)")
-                        .foregroundColor(.secondary)
-                    Text("REGON: \(user.regon)")
-                        .foregroundColor(.secondary)
+                    TextField("Tax ID (optional)", text: $nip)
+                        .keyboardType(.numberPad)
+                        .onChange(of: nip) { _, newValue in
+                            nip = String(newValue.prefix(10).filter { $0.isNumber })
+                        }
                 }
 
                 Section("Address") {
                     TextField("City", text: $city)
                     TextField("Street", text: $street)
                     TextField("Building Number", text: $buildingNumber)
-                }
-
-                Section("Fakturownia Integration") {
-                    TextField("API Token", text: $apiToken)
-                    TextField("Domain", text: $domain)
-                        .autocapitalization(.none)
                 }
 
                 Section("Change Password") {
@@ -79,7 +70,7 @@ struct EditProfileView: View {
                             .frame(maxWidth: .infinity)
                             .fontWeight(.semibold)
                     }
-                    .disabled(name.isEmpty)
+                    .disabled(name.isEmpty || (!nip.isEmpty && nip.count != 10))
                 }
             }
             .navigationTitle("Edit Profile")
@@ -131,11 +122,10 @@ struct EditProfileView: View {
 
         // Update user information
         user.name = name
+        user.nip = nip.isEmpty ? nil : nip
         user.city = city.isEmpty ? nil : city
         user.street = street.isEmpty ? nil : street
         user.buildingNumber = buildingNumber.isEmpty ? nil : buildingNumber
-        user.apiToken = apiToken.isEmpty ? nil : apiToken
-        user.domain = domain.isEmpty ? nil : domain
         user.updatedAt = Date()
 
         do {

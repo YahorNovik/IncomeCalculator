@@ -8,13 +8,10 @@ final class User {
     @Attribute(.unique) var email: String
     var passwordHash: String
     var name: String
-    @Attribute(.unique) var nip: String // Polish tax ID (10 digits)
-    @Attribute(.unique) var regon: String // Polish business registry (9 digits)
+    @Attribute(.unique) var nip: String? // Polish tax ID (10 digits, optional)
     var city: String?
     var street: String?
     var buildingNumber: String?
-    var apiToken: String? // For Fakturownia integration
-    var domain: String? // For Fakturownia integration
     var createdAt: Date
     var updatedAt: Date
 
@@ -30,20 +27,16 @@ final class User {
     @Relationship(deleteRule: .cascade, inverse: \Product.user)
     var products: [Product]?
 
-    init(email: String, password: String, name: String, nip: String, regon: String,
-         city: String? = nil, street: String? = nil, buildingNumber: String? = nil,
-         apiToken: String? = nil, domain: String? = nil) {
+    init(email: String, password: String, name: String, nip: String? = nil,
+         city: String? = nil, street: String? = nil, buildingNumber: String? = nil) {
         self.id = UUID()
         self.email = email
         self.passwordHash = User.hashPassword(password)
         self.name = name
         self.nip = nip
-        self.regon = regon
         self.city = city
         self.street = street
         self.buildingNumber = buildingNumber
-        self.apiToken = apiToken
-        self.domain = domain
         self.createdAt = Date()
         self.updatedAt = Date()
     }

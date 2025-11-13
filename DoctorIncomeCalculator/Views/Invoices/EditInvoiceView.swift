@@ -11,7 +11,6 @@ struct EditInvoiceView: View {
     @State private var number: String
     @State private var sellDate: Date
     @State private var price: String
-    @State private var fakturowniaId: String
 
     @State private var errorMessage = ""
     @State private var showError = false
@@ -22,7 +21,6 @@ struct EditInvoiceView: View {
         _number = State(initialValue: invoice.number ?? "")
         _sellDate = State(initialValue: invoice.sellDate ?? Date())
         _price = State(initialValue: invoice.price != nil ? String(format: "%.2f", invoice.price!) : "")
-        _fakturowniaId = State(initialValue: invoice.fakturowniaId ?? "")
     }
 
     var userEmployers: [Employer] {
@@ -47,11 +45,6 @@ struct EditInvoiceView: View {
                             Text(employer.name).tag(employer as Employer?)
                         }
                     }
-                }
-
-                Section("Fakturownia Integration (Optional)") {
-                    TextField("Fakturownia ID", text: $fakturowniaId)
-                        .keyboardType(.numberPad)
                 }
 
                 Section {
@@ -97,7 +90,6 @@ struct EditInvoiceView: View {
         invoice.sellDate = sellDate
         invoice.price = priceValue
         invoice.employer = employer
-        invoice.fakturowniaId = fakturowniaId.isEmpty ? nil : fakturowniaId
         invoice.updatedAt = Date()
 
         do {

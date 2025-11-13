@@ -32,12 +32,6 @@ struct InvoiceDetailView: View {
                 }
             }
 
-            if let fakturowniaId = invoice.fakturowniaId, !fakturowniaId.isEmpty {
-                Section("Fakturownia Integration") {
-                    InfoRow(label: "Fakturownia ID", value: fakturowniaId)
-                }
-            }
-
             Section("Metadata") {
                 InfoRow(label: "Created", value: invoice.createdAt.formatted(date: .long, time: .shortened))
                 InfoRow(label: "Last Updated", value: invoice.updatedAt.formatted(date: .long, time: .shortened))

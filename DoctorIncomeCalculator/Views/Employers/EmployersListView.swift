@@ -18,7 +18,7 @@ struct EmployersListView: View {
         } else {
             return filtered.filter { employer in
                 employer.name.localizedCaseInsensitiveContains(searchText) ||
-                employer.nip.contains(searchText)
+                (employer.nip?.contains(searchText) ?? false)
             }
         }
     }
@@ -74,9 +74,11 @@ struct EmployerRow: View {
                 .font(.headline)
 
             HStack {
-                Label(employer.nip, systemImage: "number")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                if let nip = employer.nip {
+                    Label(nip, systemImage: "number")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
 
                 Spacer()
 

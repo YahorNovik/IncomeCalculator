@@ -5,9 +5,7 @@ import SwiftData
 final class Employer {
     @Attribute(.unique) var id: UUID
     var name: String
-    var nip: String // 10 digits
-    var regon: String?
-    var fakturowniaId: String? // Fakturownia platform ID
+    var nip: String? // 10 digits, optional
     var city: String?
     var street: String?
     var buildingNumber: String?
@@ -23,14 +21,12 @@ final class Employer {
     @Relationship(deleteRule: .cascade, inverse: \Invoice.employer)
     var invoices: [Invoice]?
 
-    init(name: String, nip: String, regon: String? = nil, fakturowniaId: String? = nil,
+    init(name: String, nip: String? = nil,
          city: String? = nil, street: String? = nil, buildingNumber: String? = nil,
          defaultPercent: Double = 0.0, user: User) {
         self.id = UUID()
         self.name = name
         self.nip = nip
-        self.regon = regon
-        self.fakturowniaId = fakturowniaId
         self.city = city
         self.street = street
         self.buildingNumber = buildingNumber

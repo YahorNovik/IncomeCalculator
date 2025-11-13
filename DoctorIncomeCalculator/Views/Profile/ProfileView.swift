@@ -15,8 +15,9 @@ struct ProfileView: View {
                     Section("Personal Information") {
                         InfoRow(label: "Name", value: user.name)
                         InfoRow(label: "Email", value: user.email)
-                        InfoRow(label: "NIP", value: user.nip)
-                        InfoRow(label: "REGON", value: user.regon)
+                        if let nip = user.nip {
+                            InfoRow(label: "NIP", value: nip)
+                        }
                     }
 
                     if user.city != nil || user.street != nil || user.buildingNumber != nil {
@@ -30,19 +31,6 @@ struct ProfileView: View {
                             if let buildingNumber = user.buildingNumber {
                                 InfoRow(label: "Building Number", value: buildingNumber)
                             }
-                        }
-                    }
-
-                    Section("Fakturownia Integration") {
-                        if let apiToken = user.apiToken, !apiToken.isEmpty {
-                            InfoRow(label: "API Token", value: "••••••••")
-                        } else {
-                            Text("Not configured")
-                                .foregroundColor(.secondary)
-                        }
-
-                        if let domain = user.domain, !domain.isEmpty {
-                            InfoRow(label: "Domain", value: domain)
                         }
                     }
 

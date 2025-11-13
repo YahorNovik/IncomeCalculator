@@ -11,7 +11,6 @@ struct RegisterView: View {
     @State private var confirmPassword = ""
     @State private var name = ""
     @State private var nip = ""
-    @State private var regon = ""
     @State private var city = ""
     @State private var street = ""
     @State private var buildingNumber = ""
@@ -39,16 +38,10 @@ struct RegisterView: View {
                     TextField("Full Name", text: $name)
                         .textContentType(.name)
 
-                    TextField("NIP (10 digits)", text: $nip)
+                    TextField("NIP (10 digits, optional)", text: $nip)
                         .keyboardType(.numberPad)
                         .onChange(of: nip) { _, newValue in
                             nip = String(newValue.prefix(10).filter { $0.isNumber })
-                        }
-
-                    TextField("REGON (9 digits)", text: $regon)
-                        .keyboardType(.numberPad)
-                        .onChange(of: regon) { _, newValue in
-                            regon = String(newValue.prefix(9).filter { $0.isNumber })
                         }
                 }
 
@@ -89,8 +82,7 @@ struct RegisterView: View {
         !password.isEmpty &&
         password == confirmPassword &&
         !name.isEmpty &&
-        nip.count == 10 &&
-        regon.count == 9
+        (nip.isEmpty || nip.count == 10)
     }
 
     private func handleRegister() {
@@ -98,8 +90,7 @@ struct RegisterView: View {
             email: email,
             password: password,
             name: name,
-            nip: nip,
-            regon: regon,
+            nip: nip.isEmpty ? nil : nip,
             city: city.isEmpty ? nil : city,
             street: street.isEmpty ? nil : street,
             buildingNumber: buildingNumber.isEmpty ? nil : buildingNumber,

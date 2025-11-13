@@ -34,17 +34,14 @@ class AuthenticationManager: ObservableObject {
         }
     }
 
-    func register(email: String, password: String, name: String, nip: String, regon: String,
+    func register(email: String, password: String, name: String, nip: String? = nil,
                   city: String? = nil, street: String? = nil, buildingNumber: String? = nil,
                   modelContext: ModelContext) -> Result<User, AuthError> {
-        // Validate NIP (10 digits)
-        guard nip.count == 10, nip.allSatisfy({ $0.isNumber }) else {
-            return .failure(.invalidNIP)
-        }
-
-        // Validate REGON (9 digits)
-        guard regon.count == 9, regon.allSatisfy({ $0.isNumber }) else {
-            return .failure(.invalidREGON)
+        // Validate NIP if provided (10 digits)
+        if let nip = nip, !nip.isEmpty {
+            guard nip.count == 10, nip.allSatisfy({ $0.isNumber }) else {
+                return .failure(.invalidNIP)
+            }
         }
 
         // Validate email
@@ -68,24 +65,8 @@ class AuthenticationManager: ObservableObject {
             return .failure(.databaseError(error.localizedDescription))
         }
 
-        // Check if NIP already exists
-        let nipDescriptor = FetchDescriptor<User>(
-            predicate: #Predicate { user in
-                user.nip == nip
-            }
-        )
-
-        do {
-            let existingUsers = try modelContext.fetch(nipDescriptor)
-            if !existingUsers.isEmpty {
-                return .failure(.nipAlreadyExists)
-            }
-        } catch {
-            return .failure(.databaseError(error.localizedDescription))
-        }
-
         // Create new user
-        let newUser = User(email: email, password: password, name: name, nip: nip, regon: regon,
+        let newUser = User(email: email, password: password, name: name, nip: nip,
                           city: city, street: street, buildingNumber: buildingNumber)
 
         modelContext.insert(newUser)
@@ -150,9 +131,7 @@ enum AuthError: LocalizedError {
     case incorrectPassword
     case invalidEmail
     case invalidNIP
-    case invalidREGON
     case emailAlreadyExists
-    case nipAlreadyExists
     case databaseError(String)
 
     var errorDescription: String? {
@@ -165,12 +144,8 @@ enum AuthError: LocalizedError {
             return "Invalid email format"
         case .invalidNIP:
             return "NIP must be exactly 10 digits"
-        case .invalidREGON:
-            return "REGON must be exactly 9 digits"
         case .emailAlreadyExists:
             return "An account with this email already exists"
-        case .nipAlreadyExists:
-            return "An account with this NIP already exists"
         case .databaseError(let message):
             return "Database error: \(message)"
         }
