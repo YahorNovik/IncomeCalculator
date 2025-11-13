@@ -11,7 +11,7 @@ struct AddEmployerView: View {
     @State private var city = ""
     @State private var street = ""
     @State private var buildingNumber = ""
-    @State private var defaultPercent = 18.0
+    @State private var defaultPercent = 40.0
 
     @State private var errorMessage = ""
     @State private var showError = false

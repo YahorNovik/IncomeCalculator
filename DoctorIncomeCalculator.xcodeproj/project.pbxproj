@@ -39,6 +39,7 @@
 		AA0030 /* UserProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0030 /* UserProfileManager.swift */; };
 		AA0031 /* BiometricLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0031 /* BiometricLockView.swift */; };
 		AA0032 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0032 /* OnboardingView.swift */; };
+		AA0033 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0033 /* LocalizedStrings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		BB0030 /* UserProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileManager.swift; sourceTree = "<group>"; };
 		BB0031 /* BiometricLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLockView.swift; sourceTree = "<group>"; };
 		BB0032 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		BB0033 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 			children = (
 				BB0001 /* DoctorIncomeCalculatorApp.swift */,
 				BB0002 /* ContentView.swift */,
+				BB0033 /* LocalizedStrings.swift */,
 				EE0004 /* Models */,
 				EE0005 /* Services */,
 				EE0006 /* Views */,
@@ -331,6 +334,7 @@
 				AA0030 /* UserProfileManager.swift in Sources */,
 				AA0031 /* BiometricLockView.swift in Sources */,
 				AA0032 /* OnboardingView.swift in Sources */,
+				AA0033 /* LocalizedStrings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,7 @@ struct AddTransactionView: View {
     @State private var selectedEmployer: Employer?
     @State private var date = Date()
     @State private var amount = ""
-    @State private var percent = 18.0
+    @State private var percent = 40.0
     @State private var patientName = ""
     @State private var transactionDescription = ""
 

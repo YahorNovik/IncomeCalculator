@@ -5,27 +5,22 @@ struct MainTabView: View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-
-            EmployersListView()
-                .tabItem {
-                    Label("Employers", systemImage: "building.2.fill")
+                    Label(LocalizedStrings.tabDashboard, systemImage: "house.fill")
                 }
 
             TransactionsListView()
                 .tabItem {
-                    Label("Transactions", systemImage: "dollarsign.circle.fill")
+                    Label(LocalizedStrings.tabTransactions, systemImage: "dollarsign.circle.fill")
                 }
 
-            InvoicesListView()
+            EmployersListView()
                 .tabItem {
-                    Label("Invoices", systemImage: "doc.text.fill")
+                    Label(LocalizedStrings.tabEmployers, systemImage: "building.2.fill")
                 }
 
             ProfileView()
                 .tabItem {
-                    Label("Profile", systemImage: "person.fill")
+                    Label(LocalizedStrings.tabProfile, systemImage: "person.fill")
                 }
         }
     }
