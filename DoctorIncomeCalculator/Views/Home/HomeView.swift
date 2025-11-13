@@ -29,6 +29,7 @@ struct HomeView: View {
 
     @State private var showingAddTransaction = false
     @State private var showDetailedDashboard = false
+    @State private var showMonthlyOverview = true
     @State private var selectedPeriod: PeriodFilter? = nil
     @State private var navigateToTransactions = false
 
@@ -93,36 +94,100 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    // Welcome Section
-                    if let user = profileManager.currentUser {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Witaj,")
-                                .font(.headline)
-                                .foregroundColor(.secondary)
-                            Text(user.name)
-                                .font(.title)
-                                .fontWeight(.bold)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal)
-                    }
-
-                    // Add Transaction Button
+                VStack(spacing: 16) {
+                    // Add Transaction Button - top right in web, here as prominent action
                     Button(action: { showingAddTransaction = true }) {
                         HStack {
                             Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 24))
+                                .font(.system(size: 20))
                             Text(LocalizedStrings.addTransaction)
-                                .font(.headline)
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
                         }
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .padding()
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 16)
                         .background(Color.blue)
-                        .cornerRadius(12)
+                        .cornerRadius(8)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+
+                    // Monthly Overview - Collapsible like web app
+                    VStack(alignment: .leading, spacing: 0) {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showMonthlyOverview.toggle()
+                            }
+                        }) {
+                            HStack {
+                                Text("Podsumowanie miesięczne")
+                                    .font(.headline)
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Image(systemName: showMonthlyOverview ? "chevron.down" : "chevron.right")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(16)
+                            .background(Color.white)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+
+                        if showMonthlyOverview {
+                            VStack(spacing: 12) {
+                                Divider()
+
+                                // Total Earnings - prominent display
+                                VStack(spacing: 4) {
+                                    Text("Całkowite zarobki")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Text(LocalizedStrings.formatCurrency(currentMonthIncome))
+                                        .font(.system(size: 28, weight: .bold))
+                                        .foregroundColor(.green)
+                                }
+                                .padding(.vertical, 8)
+
+                                Divider()
+
+                                // Additional metrics
+                                HStack(spacing: 20) {
+                                    VStack(spacing: 4) {
+                                        Text("Liczba transakcji")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                        let currentMonthTransactions = userTransactions.filter { transaction in
+                                            Calendar.current.isDate(transaction.date, equalTo: Date(), toGranularity: .month)
+                                        }
+                                        Text("\(currentMonthTransactions.count)")
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                    }
+
+                                    Spacer()
+
+                                    VStack(spacing: 4) {
+                                        Text("Łączna kwota")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                        let totalAmount = currentMonthTransactions.reduce(0) { $0 + $1.amount }
+                                        Text(LocalizedStrings.formatCurrency(totalAmount))
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                    }
+                                }
+                                .padding(.bottom, 8)
+                            }
+                            .padding(.horizontal, 16)
+                            .background(Color.white)
+                        }
+                    }
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                    .padding(.horizontal, 16)
 
                     // Period Income Cards
                     VStack(spacing: 15) {
@@ -161,60 +226,74 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
 
-                    // Detailed Dashboard Section
+                    // By Employer Section - like web app
                     if !userEmployers.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 0) {
                             Button(action: {
-                                withAnimation {
+                                withAnimation(.easeInOut(duration: 0.2)) {
                                     showDetailedDashboard.toggle()
                                 }
                             }) {
                                 HStack {
-                                    Text(LocalizedStrings.detailedDashboard)
+                                    Text("Według pracodawcy")
                                         .font(.headline)
+                                        .foregroundColor(.primary)
                                     Spacer()
                                     Image(systemName: showDetailedDashboard ? "chevron.down" : "chevron.right")
-                                        .font(.system(size: 14))
+                                        .font(.system(size: 12, weight: .semibold))
+                                        .foregroundColor(.secondary)
                                 }
-                                .foregroundColor(.primary)
-                                .padding()
-                                .background(Color(.systemGray6))
-                                .cornerRadius(10)
+                                .padding(16)
+                                .background(Color.white)
                             }
+                            .buttonStyle(PlainButtonStyle())
 
                             if showDetailedDashboard {
-                                VStack(spacing: 12) {
-                                    Text(LocalizedStrings.byEmployer)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                VStack(spacing: 8) {
+                                    Divider()
 
                                     let employerIncomes = incomeByEmployer()
                                     if employerIncomes.isEmpty {
                                         Text(LocalizedStrings.noData)
+                                            .font(.subheadline)
                                             .foregroundColor(.secondary)
                                             .padding()
                                     } else {
                                         ForEach(employerIncomes, id: \.employer.id) { item in
-                                            EmployerIncomeRow(
-                                                employerName: item.employer.name,
-                                                income: item.income
-                                            )
+                                            HStack {
+                                                Text(item.employer.name)
+                                                    .font(.subheadline)
+                                                    .fontWeight(.medium)
+                                                Spacer()
+                                                Text(LocalizedStrings.formatCurrency(item.income))
+                                                    .font(.subheadline)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundColor(.green)
+                                            }
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 16)
+
+                                            if item.employer.id != employerIncomes.last?.employer.id {
+                                                Divider()
+                                                    .padding(.leading, 16)
+                                            }
                                         }
                                     }
                                 }
-                                .padding()
-                                .background(Color(.systemBackground))
-                                .cornerRadius(10)
-                                .shadow(radius: 2)
+                                .background(Color.white)
                             }
                         }
-                        .padding(.horizontal)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                        .padding(.horizontal, 16)
                     }
                 }
                 .padding(.vertical)
             }
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(LocalizedStrings.dashboard)
+            .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showingAddTransaction) {
                 AddTransactionView()
             }
@@ -227,7 +306,7 @@ struct HomeView: View {
     }
 }
 
-// Period Income Card Component
+// Period Income Card Component - matching web design
 struct PeriodIncomeCard: View {
     let title: String
     let income: Double
@@ -237,18 +316,18 @@ struct PeriodIncomeCard: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 15) {
+            HStack(spacing: 12) {
                 Image(systemName: icon)
-                    .font(.system(size: 32))
+                    .font(.system(size: 24))
                     .foregroundColor(color)
-                    .frame(width: 50)
+                    .frame(width: 40)
 
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(.subheadline)
+                        .font(.caption)
                         .foregroundColor(.secondary)
                     Text(LocalizedStrings.formatCurrency(income))
-                        .font(.title3)
+                        .font(.headline)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
                 }
@@ -256,46 +335,19 @@ struct PeriodIncomeCard: View {
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 14))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.secondary)
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .shadow(radius: 2)
+            .padding(16)
+            .background(Color.white)
+            .cornerRadius(8)
+            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
         }
         .buttonStyle(PlainButtonStyle())
     }
 }
 
-// Employer Income Row Component
-struct EmployerIncomeRow: View {
-    let employerName: String
-    let income: Double
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(employerName)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-            }
-
-            Spacer()
-
-            Text(LocalizedStrings.formatCurrency(income))
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.green)
-        }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-        .background(Color(.systemGray6))
-        .cornerRadius(8)
-    }
-}
-
-// Filtered Transactions View
+// Filtered Transactions View - matching web design
 struct FilteredTransactionsView: View {
     @EnvironmentObject var profileManager: UserProfileManager
     @Query private var allTransactions: [Transaction]
@@ -331,22 +383,23 @@ struct FilteredTransactionsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 15) {
-                // Summary Card
+            VStack(spacing: 16) {
+                // Summary Card - matching web design
                 VStack(spacing: 8) {
                     Text(LocalizedStrings.netIncome)
-                        .font(.subheadline)
+                        .font(.caption)
                         .foregroundColor(.secondary)
                     Text(LocalizedStrings.formatCurrency(totalIncome))
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.green)
                 }
                 .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .padding(.horizontal)
+                .padding(16)
+                .background(Color.white)
+                .cornerRadius(8)
+                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
 
                 // Transactions List
                 if filteredTransactions.isEmpty {
@@ -359,7 +412,7 @@ struct FilteredTransactionsView: View {
                     }
                     .padding(.top, 50)
                 } else {
-                    VStack(spacing: 10) {
+                    VStack(spacing: 8) {
                         ForEach(filteredTransactions.sorted(by: { $0.date > $1.date })) { transaction in
                             NavigationLink(destination: TransactionDetailView(transaction: transaction)) {
                                 TransactionRowCompact(transaction: transaction)
@@ -367,26 +420,29 @@ struct FilteredTransactionsView: View {
                             .buttonStyle(PlainButtonStyle())
                         }
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, 16)
                 }
             }
             .padding(.vertical)
         }
+        .background(Color(UIColor.systemGroupedBackground))
         .navigationTitle(periodFilter.displayName)
         .navigationBarTitleDisplayMode(.large)
     }
 }
 
-// Compact Transaction Row for Lists
+// Compact Transaction Row - matching web card design
 struct TransactionRowCompact: View {
     let transaction: Transaction
 
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 if let employer = transaction.employer {
                     Text(employer.name)
-                        .font(.headline)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.primary)
                 }
                 Text(transaction.date, style: .date)
                     .font(.caption)
@@ -397,17 +453,18 @@ struct TransactionRowCompact: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 Text(LocalizedStrings.formatCurrency(transaction.netIncome))
-                    .font(.headline)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
                     .foregroundColor(.green)
                 Text(LocalizedStrings.formatPercent(transaction.percent))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(10)
-        .shadow(radius: 1)
+        .padding(16)
+        .background(Color.white)
+        .cornerRadius(8)
+        .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 }
 

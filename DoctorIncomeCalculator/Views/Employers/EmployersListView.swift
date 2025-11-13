@@ -25,16 +25,21 @@ struct EmployersListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(userEmployers.sorted(by: { $0.name < $1.name })) { employer in
-                    NavigationLink(destination: EmployerDetailView(employer: employer)) {
-                        EmployerRow(employer: employer)
+            ScrollView {
+                VStack(spacing: 8) {
+                    ForEach(userEmployers.sorted(by: { $0.name < $1.name })) { employer in
+                        NavigationLink(destination: EmployerDetailView(employer: employer)) {
+                            EmployerRow(employer: employer)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
-                .onDelete(perform: deleteEmployers)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
             }
-            .navigationTitle("Employers")
-            .searchable(text: $searchText, prompt: "Search employers")
+            .background(Color(UIColor.systemGroupedBackground))
+            .navigationTitle(LocalizedStrings.employers)
+            .searchable(text: $searchText, prompt: LocalizedStrings.search)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingAddEmployer = true }) {
@@ -48,9 +53,9 @@ struct EmployersListView: View {
             .overlay {
                 if userEmployers.isEmpty {
                     ContentUnavailableView(
-                        "No Employers",
+                        LocalizedStrings.noEmployers,
                         systemImage: "building.2",
-                        description: Text("Add your first employer to start tracking income")
+                        description: Text("Dodaj swojego pierwszego pracodawcę, aby rozpocząć śledzenie dochodów")
                     )
                 }
             }
@@ -69,34 +74,44 @@ struct EmployerRow: View {
     let employer: Employer
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(employer.name)
-                .font(.headline)
-
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
+                Text(employer.name)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+
+                Spacer()
+
                 if let nip = employer.nip {
-                    Label(nip, systemImage: "number")
+                    Text(nip)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            HStack(spacing: 12) {
+                if !employer.fullAddress.isEmpty {
+                    Text(employer.fullAddress)
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
 
                 Spacer()
 
-                Text("\(Int(employer.defaultPercent))%")
+                Text(LocalizedStrings.formatPercent(employer.defaultPercent))
                     .font(.caption)
+                    .fontWeight(.medium)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.blue.opacity(0.2))
-                    .cornerRadius(5)
-            }
-
-            if !employer.fullAddress.isEmpty {
-                Text(employer.fullAddress)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .background(Color.blue.opacity(0.15))
+                    .cornerRadius(4)
             }
         }
-        .padding(.vertical, 5)
+        .padding(16)
+        .background(Color.white)
+        .cornerRadius(8)
+        .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 }
 
