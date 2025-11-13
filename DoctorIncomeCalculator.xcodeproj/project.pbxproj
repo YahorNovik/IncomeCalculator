@@ -35,6 +35,10 @@
 		AA0026 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0026 /* EditProfileView.swift */; };
 		AA0027 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0027 /* Assets.xcassets */; };
 		AA0028 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0028 /* Preview Assets.xcassets */; };
+		AA0029 /* BiometricAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0029 /* BiometricAuthManager.swift */; };
+		AA0030 /* UserProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0030 /* UserProfileManager.swift */; };
+		AA0031 /* BiometricLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0031 /* BiometricLockView.swift */; };
+		AA0032 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0032 /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +71,10 @@
 		BB0026 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		BB0027 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB0028 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		BB0029 /* BiometricAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthManager.swift; sourceTree = "<group>"; };
+		BB0030 /* UserProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileManager.swift; sourceTree = "<group>"; };
+		BB0031 /* BiometricLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLockView.swift; sourceTree = "<group>"; };
+		BB0032 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +134,8 @@
 			isa = PBXGroup;
 			children = (
 				BB0008 /* AuthenticationManager.swift */,
+				BB0029 /* BiometricAuthManager.swift */,
+				BB0030 /* UserProfileManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -135,6 +145,7 @@
 			children = (
 				BB0011 /* MainTabView.swift */,
 				EE0008 /* Auth */,
+				EE0014 /* Onboarding */,
 				EE0009 /* Home */,
 				EE0010 /* Employers */,
 				EE0011 /* Transactions */,
@@ -157,6 +168,7 @@
 			children = (
 				BB0009 /* LoginView.swift */,
 				BB0010 /* RegisterView.swift */,
+				BB0031 /* BiometricLockView.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -209,6 +221,14 @@
 				BB0026 /* EditProfileView.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		EE0014 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				BB0032 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -307,6 +327,10 @@
 				AA0024 /* EditInvoiceView.swift in Sources */,
 				AA0025 /* ProfileView.swift in Sources */,
 				AA0026 /* EditProfileView.swift in Sources */,
+				AA0029 /* BiometricAuthManager.swift in Sources */,
+				AA0030 /* UserProfileManager.swift in Sources */,
+				AA0031 /* BiometricLockView.swift in Sources */,
+				AA0032 /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
