@@ -11,62 +11,102 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                if let user = profileManager.currentUser {
-                    Section("Personal Information") {
-                        InfoRow(label: "Name", value: user.name)
-                        InfoRow(label: "Email", value: user.email)
-                        if let nip = user.nip {
-                            InfoRow(label: "NIP", value: nip)
-                        }
-                    }
+            ScrollView {
+                VStack(spacing: 20) {
+                    if let user = profileManager.currentUser {
+                        // PERSONAL INFORMATION Section
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("PERSONAL INFORMATION")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 20)
+                                .padding(.bottom, 8)
 
-                    if user.city != nil || user.street != nil || user.buildingNumber != nil {
-                        Section("Address") {
-                            if let city = user.city {
-                                InfoRow(label: "City", value: city)
+                            VStack(spacing: 0) {
+                                InfoRow(label: "Name", value: user.name)
+                                Divider()
+                                    .padding(.leading, 20)
+                                InfoRow(label: "Email", value: user.email)
+                                if let nip = user.nip {
+                                    Divider()
+                                        .padding(.leading, 20)
+                                    InfoRow(label: "NIP", value: nip)
+                                }
                             }
-                            if let street = user.street {
-                                InfoRow(label: "Street", value: street)
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal, 20)
+                        }
+
+                        // ACCOUNT Section
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("ACCOUNT")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 20)
+                                .padding(.bottom, 8)
+
+                            VStack(spacing: 0) {
+                                InfoRow(label: "Member Since", value: user.createdAt.formatted(date: .long, time: .omitted))
                             }
-                            if let buildingNumber = user.buildingNumber {
-                                InfoRow(label: "Building Number", value: buildingNumber)
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal, 20)
+                        }
+
+                        // Action Buttons
+                        VStack(spacing: 12) {
+                            Button(action: { isEditingProfile = true }) {
+                                HStack {
+                                    Image(systemName: "pencil")
+                                        .foregroundColor(.blue)
+                                    Text("Edit Profile")
+                                        .foregroundColor(.blue)
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(Color.white)
+                                .cornerRadius(12)
+                            }
+
+                            Button(action: { biometricAuth.logout() }) {
+                                HStack {
+                                    Image(systemName: "lock.fill")
+                                        .foregroundColor(.blue)
+                                    Text("Lock App")
+                                        .foregroundColor(.blue)
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(Color.white)
+                                .cornerRadius(12)
                             }
                         }
-                    }
+                        .padding(.horizontal, 20)
 
-                    Section("Account") {
-                        InfoRow(label: "Member Since", value: user.createdAt.formatted(date: .long, time: .omitted))
+                        // Delete Account Button
+                        VStack(spacing: 0) {
+                            Button(action: { showingDeleteConfirmation = true }) {
+                                HStack {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                    Text("Delete Account")
+                                        .foregroundColor(.red)
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(Color.white)
+                                .cornerRadius(12)
+                            }
+                        }
+                        .padding(.horizontal, 20)
                     }
                 }
-
-                Section {
-                    Button(action: { isEditingProfile = true }) {
-                        HStack {
-                            Image(systemName: "pencil")
-                            Text("Edit Profile")
-                        }
-                    }
-
-                    Button(action: { biometricAuth.logout() }) {
-                        HStack {
-                            Image(systemName: "lock.fill")
-                            Text("Lock App")
-                        }
-                        .foregroundColor(.blue)
-                    }
-                }
-
-                Section {
-                    Button(role: .destructive, action: { showingDeleteConfirmation = true }) {
-                        HStack {
-                            Image(systemName: "trash")
-                            Text("Delete Account")
-                        }
-                    }
-                }
+                .padding(.vertical, 20)
             }
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Profile")
+            .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $isEditingProfile) {
                 if let user = profileManager.currentUser {
                     EditProfileView(user: user)
@@ -95,6 +135,27 @@ struct ProfileView: View {
         } catch {
             print("Failed to delete account: \(error.localizedDescription)")
         }
+    }
+}
+
+// Info Row Component - matching web app
+struct InfoRow: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Spacer()
+            Text(value)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(.primary)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
     }
 }
 
